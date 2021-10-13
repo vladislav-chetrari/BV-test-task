@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask.base
+package vlad.chetrari.bvtesttask.app.base
 
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity

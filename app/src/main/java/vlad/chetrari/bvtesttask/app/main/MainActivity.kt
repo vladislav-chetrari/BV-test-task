@@ -1,11 +1,11 @@
-package vlad.chetrari.bvtesttask.ui
+package vlad.chetrari.bvtesttask.app.main
 
 import android.content.res.Resources
 import android.os.Bundle
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.R
-import vlad.chetrari.bvtesttask.base.BaseActivity
+import vlad.chetrari.bvtesttask.app.base.BaseActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint

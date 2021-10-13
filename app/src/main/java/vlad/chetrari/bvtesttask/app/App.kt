@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask
+package vlad.chetrari.bvtesttask.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
