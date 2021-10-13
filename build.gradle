@@ -1,5 +1,6 @@
 buildscript {
     ext {
+        kt = '1.5.10'
         hiltVersion = '2.39.1'
     }
     repositories {
