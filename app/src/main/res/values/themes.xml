@@ -13,4 +13,10 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="AppTheme.ProgressHorizontal" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_marginBottom">-6dp</item>
+        <item name="android:layout_marginTop">-6dp</item>
+        <item name="android:indeterminate">true</item>
+    </style>
 </resources>
