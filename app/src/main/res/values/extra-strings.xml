@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="twitter_api_base_url">https://api.twitter.com/</string>
+    <string name="twitter_api_key">TZIAv5hCbifA0EUdcKsZ76UUD</string>
+    <string name="twitter_api_key_secret">sxILWEuAIB4qb7OsgqrzmYiSIcksTc9an6cKjk3wrmOor2BmN7</string>
+    <string name="twitter_api_grant_type">client_credentials</string>
+</resources>
