@@ -3,7 +3,6 @@ package vlad.chetrari.bvtesttask.app.main.routes
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
@@ -42,15 +41,17 @@ class MainRoutesFragment : BaseFragment(R.layout.fragment_main_routes) {
 
     override fun observeLiveData() {
         viewModel.routes.observe(listAdapter::submitList)
-        viewModel.message.observe { message ->
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        viewModel.navigateV1StreamSearch.observe {
+            findNavController().navigate(
+                MainRoutesFragmentDirections.toTwitStreamSearchFragment()
+            )
         }
-        viewModel.oauth2Bearer.observe { result ->
+        viewModel.navigateV2StreamSearch.observe { result ->
             progressBar.isVisible = result.isComplete.not()
             when (result) {
                 is Result.Error -> Snackbar.make(coordinator, result.throwable.message.toString(), Snackbar.LENGTH_SHORT).show()
                 is Result.Success -> findNavController().navigate(
-                    MainRoutesFragmentDirections.actionMainRoutesFragmentToTwitStreamSearchFragment(result.value)
+                    MainRoutesFragmentDirections.toTwitV2StreamSearchFragment(result.value)
                 )
             }
         }

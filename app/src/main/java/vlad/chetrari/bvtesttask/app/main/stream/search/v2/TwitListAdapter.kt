@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask.app.main.stream.search
+package vlad.chetrari.bvtesttask.app.main.stream.search.v2
 
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater

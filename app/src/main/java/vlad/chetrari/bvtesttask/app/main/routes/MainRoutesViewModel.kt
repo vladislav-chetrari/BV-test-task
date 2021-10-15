@@ -15,20 +15,20 @@ class MainRoutesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val routes = mutableLiveData(MainRoute.values().toList())
-    val oauth2Bearer = actionLiveData<Result<Bearer>>()
-    val message = actionLiveData<String>()
+    val navigateV2StreamSearch = actionLiveData<Result<Bearer>>()
+    val navigateV1StreamSearch = actionLiveData<Unit>()
 
     fun onRouteSelected(route: MainRoute) = when (route) {
-        MainRoute.API_V1 -> message.mutable.postValue("TBD")
+        MainRoute.API_V1 -> navigateV1StreamSearch.mutable.postValue(Unit)
         MainRoute.API_V2 -> gainOauth2Bearer()
     }
 
     private fun gainOauth2Bearer() {
-        oauth2Bearer.mutable.postValue(Result.Progress)
+        navigateV2StreamSearch.mutable.postValue(Result.Progress)
         viewModelScope.launch {
             runCatching { oAuth2Client.authenticate() }.fold(
-                onSuccess = { oauth2Bearer.mutable.postValue(Result.Success(it)) },
-                onFailure = { oauth2Bearer.mutable.postValue(Result.Error(it)) }
+                onSuccess = { navigateV2StreamSearch.mutable.postValue(Result.Success(it)) },
+                onFailure = { navigateV2StreamSearch.mutable.postValue(Result.Error(it)) }
             )
         }
     }
