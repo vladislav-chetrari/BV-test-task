@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask.data.network.model.response
+package vlad.chetrari.bvtesttask.data.model.interchange.response
 
 import com.google.gson.annotations.SerializedName
 

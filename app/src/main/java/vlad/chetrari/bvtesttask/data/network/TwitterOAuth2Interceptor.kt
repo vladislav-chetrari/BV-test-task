@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TwitterOAuthInterceptor @Inject constructor(
+class TwitterOAuth2Interceptor @Inject constructor(
     @Twitter.OAuth.Key key: String,
     @Twitter.OAuth.KeySecret keySecret: String,
     private val encoder: Base64Encoder

@@ -7,9 +7,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import vlad.chetrari.bvtesttask.R
-import vlad.chetrari.bvtesttask.data.network.TwitterOAuthInterceptor
-import vlad.chetrari.bvtesttask.data.network.api.TwitterOAuthApi
+import vlad.chetrari.bvtesttask.data.network.TwitterOAuth2Interceptor
+import vlad.chetrari.bvtesttask.data.network.api.TwitterOAuth2Api
+import vlad.chetrari.bvtesttask.data.network.api.TwitterV2StreamApi
+import vlad.chetrari.bvtesttask.data.network.api.TwitterV2StreamSetupApi
 import vlad.chetrari.bvtesttask.di.Twitter
 import javax.inject.Singleton
 
@@ -40,9 +43,14 @@ class TwitterApiModule {
     @Provides
     @Singleton
     @Twitter.OAuth.Client
-    fun twitterApiClient(builder: OkHttpClient.Builder, interceptor: TwitterOAuthInterceptor): OkHttpClient = builder
+    fun twitterOAuthClient(builder: OkHttpClient.Builder, interceptor: TwitterOAuth2Interceptor): OkHttpClient = builder
         .addInterceptor(interceptor)
         .build()
+
+    @Provides
+    @Singleton
+    @Twitter.StreamSearch.Client
+    fun twitterStreamSearchClient(builder: OkHttpClient.Builder): OkHttpClient = builder.build()
 
     @Provides
     @Singleton
@@ -50,10 +58,36 @@ class TwitterApiModule {
         builder: Retrofit.Builder,
         @Twitter.BaseUrl baseUrl: String,
         @Twitter.OAuth.Client client: OkHttpClient
-    ): TwitterOAuthApi = builder
+    ): TwitterOAuth2Api = builder
         .baseUrl(baseUrl)
         .client(client)
         .build()
-        .create(TwitterOAuthApi::class.java)
+        .create(TwitterOAuth2Api::class.java)
 
+    @Provides
+    @Singleton
+    fun twitterStreamSearchSetupApi(
+        builder: Retrofit.Builder,
+        @Twitter.BaseUrl baseUrl: String,
+        @Twitter.StreamSearch.Client client: OkHttpClient
+    ): TwitterV2StreamSetupApi = builder
+        .baseUrl(baseUrl)
+        .client(client)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
+        .create(TwitterV2StreamSetupApi::class.java)
+
+    @Provides
+    @Singleton
+    fun twitterStreamSearchApi(
+        @Twitter.BaseUrl baseUrl: String,
+    ): TwitterV2StreamApi {
+        val okHttp = OkHttpClient.Builder().build()
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(okHttp)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
+            .create(TwitterV2StreamApi::class.java)
+    }
 }

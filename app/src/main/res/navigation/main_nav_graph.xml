@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph.xml"
+    app:startDestination="@id/authorizingFragment">
+
+    <fragment
+        android:id="@+id/authorizingFragment"
+        android:name="vlad.chetrari.bvtesttask.app.main.auth.AuthorizingFragment"
+        android:label="@string/authorizing_title"
+        tools:layout="@layout/fragment_authorizing">
+        <action
+            android:id="@+id/action_authorizingFragment_to_streamSearchFragment"
+            app:destination="@id/streamSearchFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/streamSearchFragment"
+        android:name="vlad.chetrari.bvtesttask.app.main.stream.search.TwitStreamSearchFragment"
+        android:label="@string/stream_search_title"
+        tools:layout="@layout/fragment_twit_stream_search">
+        <argument
+            android:name="bearerToken"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
