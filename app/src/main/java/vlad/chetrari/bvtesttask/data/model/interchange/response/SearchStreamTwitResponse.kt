@@ -16,7 +16,7 @@ data class SearchStreamTwitResponse(
         @SerializedName("screen_name")
         val screenName: String,
         val description: String? = null,
-        @SerializedName("profile_image_url")
+        @SerializedName("profile_image_url_https")
         val profileImageUrl: String? = null
     )
 
