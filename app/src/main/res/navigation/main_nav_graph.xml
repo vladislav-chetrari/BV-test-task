@@ -11,17 +11,25 @@
         android:label="@string/routes_title"
         tools:layout="@layout/fragment_main_routes">
         <action
-            android:id="@+id/action_mainRoutesFragment_to_twitStreamSearchFragment"
+            android:id="@+id/to_twitV2StreamSearchFragment"
+            app:destination="@id/twitV2StreamSearchFragment" />
+        <action
+            android:id="@+id/to_twitStreamSearchFragment"
             app:destination="@id/twitStreamSearchFragment" />
     </fragment>
     <fragment
-        android:id="@+id/twitStreamSearchFragment"
+        android:id="@+id/twitV2StreamSearchFragment"
         android:name="vlad.chetrari.bvtesttask.app.main.stream.search.v2.TwitV2StreamSearchFragment"
         android:label="@string/stream_search_title"
-        tools:layout="@layout/fragment_twit_v2_stream_search">
+        tools:layout="@layout/fragment_twit_stream_search">
         <argument
             android:name="bearer"
             app:argType="vlad.chetrari.bvtesttask.data.model.ui.Bearer" />
     </fragment>
+    <fragment
+        android:id="@+id/twitStreamSearchFragment"
+        android:name="vlad.chetrari.bvtesttask.app.main.stream.search.v1.TwitStreamSearchFragment"
+        android:label="@string/stream_search_title"
+        tools:layout="@layout/fragment_twit_stream_search" />
 
 </navigation>
