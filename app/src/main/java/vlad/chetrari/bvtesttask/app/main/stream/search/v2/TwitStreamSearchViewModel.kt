@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask.app.main.stream.search
+package vlad.chetrari.bvtesttask.app.main.stream.search.v2
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
 import vlad.chetrari.bvtesttask.data.model.ui.Twit
+import vlad.chetrari.bvtesttask.data.network.client.TwitterOAuth2Client
 import vlad.chetrari.bvtesttask.data.network.client.TwitterV2SearchClient
 import vlad.chetrari.bvtesttask.data.network.client.TwitterV2SearchSetupClient
 import java.net.SocketTimeoutException
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TwitStreamSearchViewModel @Inject constructor(
+    private val oauth2Client: TwitterOAuth2Client,
     private val setupClient: TwitterV2SearchSetupClient,
     private val searchClient: TwitterV2SearchClient
 ) : BaseViewModel() {

@@ -3,27 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph.xml"
-    app:startDestination="@id/authorizingFragment">
+    app:startDestination="@id/mainRoutesFragment">
 
     <fragment
-        android:id="@+id/authorizingFragment"
-        android:name="vlad.chetrari.bvtesttask.app.main.auth.AuthorizingFragment"
-        android:label="@string/authorizing_title"
-        tools:layout="@layout/fragment_authorizing">
+        android:id="@+id/mainRoutesFragment"
+        android:name="vlad.chetrari.bvtesttask.app.main.routes.MainRoutesFragment"
+        android:label="@string/routes_title"
+        tools:layout="@layout/fragment_main_routes">
         <action
-            android:id="@+id/action_authorizingFragment_to_streamSearchFragment"
-            app:destination="@id/streamSearchFragment"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_mainRoutesFragment_to_twitStreamSearchFragment"
+            app:destination="@id/twitStreamSearchFragment" />
     </fragment>
     <fragment
-        android:id="@+id/streamSearchFragment"
-        android:name="vlad.chetrari.bvtesttask.app.main.stream.search.TwitStreamSearchFragment"
+        android:id="@+id/twitStreamSearchFragment"
+        android:name="vlad.chetrari.bvtesttask.app.main.stream.search.v2.TwitV2StreamSearchFragment"
         android:label="@string/stream_search_title"
-        tools:layout="@layout/fragment_twit_stream_search">
+        tools:layout="@layout/fragment_twit_v2_stream_search">
         <argument
-            android:name="bearerToken"
-            app:argType="string" />
+            android:name="bearer"
+            app:argType="vlad.chetrari.bvtesttask.data.model.ui.Bearer" />
     </fragment>
 
 </navigation>
