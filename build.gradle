@@ -4,6 +4,7 @@ buildscript {
         ktCoroutines = '1.3.7'
         hiltVersion = '2.39.1'
         lifecycle = '2.2.0'
+        navigation = '2.3.5'
         retrofit = '2.8.1'
     }
     repositories {
@@ -14,6 +15,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:7.0.3"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kt"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation"
     }
 }
 
