@@ -11,8 +11,6 @@ annotation class Twitter {
     @Retention(BINARY)
     annotation class BaseUrl
 
-    @Qualifier
-    @Retention(BINARY)
     annotation class OAuth {
 
         @Qualifier
@@ -30,5 +28,13 @@ annotation class Twitter {
         @Qualifier
         @Retention(BINARY)
         annotation class GrantType
+    }
+
+    annotation class StreamSearch {
+
+        @Qualifier
+        @Retention(BINARY)
+        annotation class Client
+
     }
 }
