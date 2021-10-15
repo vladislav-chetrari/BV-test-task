@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.imageview.ShapeableImageView
+import com.squareup.picasso.Picasso
 import vlad.chetrari.bvtesttask.R
 import vlad.chetrari.bvtesttask.data.model.ui.SearchStreamTwit
 
@@ -24,7 +27,7 @@ class TwitListAdapter : ListAdapter<SearchStreamTwit, TwitListAdapter.ViewHolder
 
         private val res: Resources
             get() = itemView.resources
-        private val userImage: ImageView
+        private val userImage: ShapeableImageView
             get() = itemView.findViewById(R.id.userImage)
         private val userScreenName: TextView
             get() = itemView.findViewById(R.id.userScreenName)
@@ -34,10 +37,16 @@ class TwitListAdapter : ListAdapter<SearchStreamTwit, TwitListAdapter.ViewHolder
             get() = itemView.findViewById(R.id.twitText)
 
         fun bind(twit: SearchStreamTwit) {
+            twit.userProfileImageUrl?.let { url -> userImage.load(url) }
             userScreenName.text = res.getString(R.string.twit_screen_name_format, twit.userScreenName)
-            userDescription.text = twit.userDescription
+            twit.userDescription.let { description ->
+                userDescription.text = description
+                userDescription.isVisible = description.isNotBlank()
+            }
             twitText.text = twit.text
         }
+
+        private fun ImageView.load(url: String) = Picasso.get().load(url).into(this)
     }
 
     private class ItemCallback : DiffUtil.ItemCallback<SearchStreamTwit>() {
