@@ -1,6 +1,6 @@
 package vlad.chetrari.bvtesttask.data.model.ui
 
-data class SearchStreamTwit(
+data class TwitterStatus(
     val id: Long,
     val text: String,
     val timestampEpochMillis: Long,

@@ -16,11 +16,6 @@ class TwitterApiConstantsModule {
     @Provides
     @Singleton
     @Twitter.BaseUrl
-    fun twitterApiBaseUrl(res: Resources): String = res.getString(R.string.twitter_api_base_url)
-
-    @Provides
-    @Singleton
-    @Twitter.StreamBaseUrl
     fun twitterStreamApiBaseUrl(res: Resources): String = res.getString(R.string.twitter_stream_api_base_url)
 
     @Provides
@@ -43,8 +38,4 @@ class TwitterApiConstantsModule {
     @Twitter.OAuth.AccessSecret
     fun twitterApiAccessSecret(res: Resources): String = res.getString(R.string.twitter_api_access_secret)
 
-    @Provides
-    @Singleton
-    @Twitter.OAuth.GrantType
-    fun twitterApiGrantType(res: Resources): String = res.getString(R.string.twitter_api_grant_type)
 }

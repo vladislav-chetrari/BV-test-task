@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask.app.main.stream.search.v1
+package vlad.chetrari.bvtesttask.app.twitter.statuses
 
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.squareup.picasso.Picasso
 import vlad.chetrari.bvtesttask.R
-import vlad.chetrari.bvtesttask.data.model.ui.SearchStreamTwit
+import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
 
-class TwitListAdapter : ListAdapter<SearchStreamTwit, TwitListAdapter.ViewHolder>(ItemCallback()) {
+class TwitterStatusListAdapter : ListAdapter<TwitterStatus, TwitterStatusListAdapter.ViewHolder>(ItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.list_item_twit_v1, parent, false)
+        LayoutInflater.from(parent.context).inflate(R.layout.list_item_twitter_status, parent, false)
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
@@ -36,21 +36,21 @@ class TwitListAdapter : ListAdapter<SearchStreamTwit, TwitListAdapter.ViewHolder
         private val twitText: TextView
             get() = itemView.findViewById(R.id.twitText)
 
-        fun bind(twit: SearchStreamTwit) {
-            twit.userProfileImageUrl?.let { url -> userImage.load(url) }
-            userScreenName.text = res.getString(R.string.twit_screen_name_format, twit.userScreenName)
-            twit.userDescription.let { description ->
+        fun bind(twitterStatus: TwitterStatus) {
+            twitterStatus.userProfileImageUrl?.let { url -> userImage.load(url) }
+            userScreenName.text = res.getString(R.string.user_screen_name_format, twitterStatus.userScreenName)
+            twitterStatus.userDescription.let { description ->
                 userDescription.text = description
                 userDescription.isVisible = description.isNotBlank()
             }
-            twitText.text = twit.text
+            twitText.text = twitterStatus.text
         }
 
         private fun ImageView.load(url: String) = Picasso.get().load(url).into(this)
     }
 
-    private class ItemCallback : DiffUtil.ItemCallback<SearchStreamTwit>() {
-        override fun areItemsTheSame(oldItem: SearchStreamTwit, newItem: SearchStreamTwit) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: SearchStreamTwit, newItem: SearchStreamTwit) = oldItem == newItem
+    private class ItemCallback : DiffUtil.ItemCallback<TwitterStatus>() {
+        override fun areItemsTheSame(oldItem: TwitterStatus, newItem: TwitterStatus) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: TwitterStatus, newItem: TwitterStatus) = oldItem == newItem
     }
 }
