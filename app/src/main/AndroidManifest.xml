@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BVTestTask">
         <activity
-            android:name=".app.splash.SplashActivity"
+            android:name=".app.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
