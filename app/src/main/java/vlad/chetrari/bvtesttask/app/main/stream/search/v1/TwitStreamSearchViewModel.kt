@@ -30,12 +30,10 @@ class TwitStreamSearchViewModel @Inject constructor(
         twitStreamDisposable?.dispose()
         if (query.isNotBlank()) {
             val twitList = LinkedList<SearchStreamTwit>()
-            twitStreamDisposable = client.search(query)
-                .doOnNext { Timber.d("row fetched = $it") }
-                .subscribe({ str ->
-                    twitList.add(str)
-                    liveData.postValue(twitList.sortedByDescending { it.timestampEpochMillis })
-                }, ::onError)
+            twitStreamDisposable = client.search(query).subscribe({ str ->
+                twitList.add(str)
+                liveData.postValue(twitList.sortedByDescending { it.timestampEpochMillis })
+            }, ::onError)
         } else {
             liveData.postValue(emptyList())
         }
