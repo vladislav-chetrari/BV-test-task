@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import vlad.chetrari.bvtesttask.R
 import vlad.chetrari.bvtesttask.app.base.BaseFragment
-import vlad.chetrari.bvtesttask.app.main.stream.search.TwitListAdapter
 
 @AndroidEntryPoint
-class TwitV2StreamSearchFragment : BaseFragment(R.layout.fragment_twit_v2_stream_search) {
+//TODO make common parent fragment out of v1 and v2
+class TwitV2StreamSearchFragment : BaseFragment(R.layout.fragment_twit_stream_search) {
 
-    private val viewModel by viewModels<TwitStreamSearchViewModel>()
+    private val viewModel by viewModels<TwitV2StreamSearchViewModel>()
     private val navArgs by navArgs<TwitV2StreamSearchFragmentArgs>()
     private val listAdapter = TwitListAdapter()
 

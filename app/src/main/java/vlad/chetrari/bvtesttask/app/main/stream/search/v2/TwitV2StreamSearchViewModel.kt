@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
 import vlad.chetrari.bvtesttask.data.model.ui.Twit
-import vlad.chetrari.bvtesttask.data.network.client.TwitterOAuth2Client
 import vlad.chetrari.bvtesttask.data.network.client.TwitterV2SearchClient
 import vlad.chetrari.bvtesttask.data.network.client.TwitterV2SearchSetupClient
 import java.net.SocketTimeoutException
@@ -15,8 +14,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class TwitStreamSearchViewModel @Inject constructor(
-    private val oauth2Client: TwitterOAuth2Client,
+class TwitV2StreamSearchViewModel @Inject constructor(
     private val setupClient: TwitterV2SearchSetupClient,
     private val searchClient: TwitterV2SearchClient
 ) : BaseViewModel() {
@@ -30,7 +28,8 @@ class TwitStreamSearchViewModel @Inject constructor(
         addSource(bearerToken) { token = it }
         addSource(searchKeyword) { query -> trySetUpSearchReportingState(token, query) }
     }
-    val twits = searchSetUp.switchMap { isSearchSetUp -> twitStreamLiveData(bearerToken.value, isSearchSetUp) }
+    val twits: LiveData<List<Twit>> =
+        searchSetUp.switchMap { isSearchSetUp -> twitStreamLiveData(bearerToken.value, isSearchSetUp) }
 
     fun onBearerTokenReceived(token: String) = bearerToken.postValue(token)
 

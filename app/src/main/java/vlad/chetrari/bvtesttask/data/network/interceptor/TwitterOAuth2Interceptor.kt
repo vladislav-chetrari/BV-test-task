@@ -1,4 +1,4 @@
-package vlad.chetrari.bvtesttask.data.network
+package vlad.chetrari.bvtesttask.data.network.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response
