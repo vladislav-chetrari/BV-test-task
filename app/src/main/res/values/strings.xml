@@ -3,4 +3,9 @@
     <string name="authorizing_title">Authorizing…</string>
     <string name="authorized_title">Authorized</string>
     <string name="stream_search_title">Stream Search</string>
+    <string name="main_route_api_v1_title">API v1.1</string>
+    <string name="main_route_api_v2_title">API v2</string>
+    <string name="main_route_api_v1_subtitle">Using Twitter Streaming API V1.1</string>
+    <string name="main_route_api_v2_subtitle">Using Twitter Streaming API V2</string>
+    <string name="routes_title">Routes</string>
 </resources>
