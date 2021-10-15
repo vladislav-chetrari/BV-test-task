@@ -9,6 +9,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+//TODO plant crashlytics tree if production (inject tree)
         Timber.plant(Timber.DebugTree())
     }
 }

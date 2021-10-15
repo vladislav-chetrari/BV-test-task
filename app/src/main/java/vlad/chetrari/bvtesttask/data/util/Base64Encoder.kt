@@ -7,7 +7,5 @@ import javax.inject.Singleton
 @Singleton
 class Base64Encoder @Inject constructor() {
 
-    fun encode(value: String): String = Base64.encodeToString(value.toByteArray(), Base64.NO_WRAP)
-
     fun encode(value: ByteArray): String = Base64.encodeToString(value, Base64.NO_WRAP)
 }

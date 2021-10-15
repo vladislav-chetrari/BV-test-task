@@ -5,27 +5,29 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.internal.toLongOrDefault
+import okio.BufferedSource
 import timber.log.Timber
-import vlad.chetrari.bvtesttask.data.model.interchange.response.SearchStreamTwitResponse
-import vlad.chetrari.bvtesttask.data.model.ui.SearchStreamTwit
+import vlad.chetrari.bvtesttask.data.model.response.TwitterStatusResponse
+import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
 import vlad.chetrari.bvtesttask.data.network.api.TwitterStreamApi
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TwitterSearchClient @Inject constructor(
+class TwitterStreamClient @Inject constructor(
     private val gson: Gson,
     private val api: TwitterStreamApi
 ) {
 
-    fun search(keyword: String): Observable<SearchStreamTwit> = api.statusesFilter(keyword)
+    fun search(keyword: String): Observable<TwitterStatus> = api.statusesFilter(keyword)
         .map { it.source() }
         .flatMap { stringEvents(it) }
         .filter { it.isNotBlank() }
         .doOnNext { Timber.d("tweet data: $it") }
-        .map { json -> gson.fromJson(json, SearchStreamTwitResponse::class.java) }
+        .map { json -> gson.fromJson(json, TwitterStatusResponse::class.java) }
         .map { response ->
-            SearchStreamTwit(
+            TwitterStatus(
                 response.id,
                 response.extendedTweet?.text ?: response.text,
                 response.timestampEpochMillis.toLongOrDefault(System.currentTimeMillis()),
@@ -37,4 +39,16 @@ class TwitterSearchClient @Inject constructor(
         }
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+
+    private fun stringEvents(source: BufferedSource): Observable<String> = Observable.create { emitter ->
+        try {
+            while (!source.exhausted()) {
+                emitter.onNext(source.readUtf8Line() ?: "")
+            }
+        } catch (e: IOException) {
+            emitter.onError(e)
+        } finally {
+            emitter.onComplete()
+        }
+    }
 }

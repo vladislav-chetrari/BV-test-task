@@ -1,8 +1,8 @@
-package vlad.chetrari.bvtesttask.data.model.interchange.response
+package vlad.chetrari.bvtesttask.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class SearchStreamTwitResponse(
+data class TwitterStatusResponse(
     val id: Long,
     val text: String,
     val user: User,

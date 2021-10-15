@@ -4,7 +4,6 @@
     <string name="twitter_stream_api_base_url">https://stream.twitter.com/1.1/</string>
     <string name="twitter_api_key">TZIAv5hCbifA0EUdcKsZ76UUD</string>
     <string name="twitter_api_key_secret">sxILWEuAIB4qb7OsgqrzmYiSIcksTc9an6cKjk3wrmOor2BmN7</string>
-    <string name="twitter_api_grant_type">client_credentials</string>
     <string name="twitter_api_access_token">1447954594986876936-sbvpItlij07rUCeXi8Nt2BjWnAwnQ2</string>
     <string name="twitter_api_access_secret">J8p5PHbpwQP1kyKtylSyRyGu1HHxrW362EtPhWNGzOnN9</string>
 </resources>
