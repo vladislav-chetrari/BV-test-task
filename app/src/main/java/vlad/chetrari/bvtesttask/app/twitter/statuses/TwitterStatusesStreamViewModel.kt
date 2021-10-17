@@ -57,6 +57,7 @@ class TwitterStatusesStreamViewModel @Inject constructor(
                 liveStatusesManager.onNetworkStateChange(false)
                 registerAutoCancellableNetworkCallback {
                     liveStatusesManager.onNetworkStateChange(true)
+                    runStream()
                 }
             }
             else -> super.onError(error)
