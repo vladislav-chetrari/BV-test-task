@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
 import vlad.chetrari.bvtesttask.data.network.client.TwitterStreamClient
@@ -37,9 +36,8 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     private fun runStream(query: String) {
         streamDisposable?.dispose()
         if (query.isNotBlank()) {
-            streamDisposable = client.search(query).subscribe({
-                viewModelScope.launch { liveStatusesManager.add(it) }
-            }, ::onError)
+            streamDisposable = client.search(query)
+                .subscribe(liveStatusesManager::add, ::onError)
         }
     }
 
