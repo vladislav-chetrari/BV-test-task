@@ -18,12 +18,19 @@ class TwitterApiModule {
 
     @Provides
     @Singleton
-    fun twitterStreamSearchV1Api(
+    fun okHttpClient(
+        builder: OkHttpClient.Builder,
+        oAuthInterceptor: TwitterOAuthInterceptor
+    ) = builder.addInterceptor(oAuthInterceptor).build()
+
+    @Provides
+    @Singleton
+    fun twitterStreamApi(
         @Twitter.BaseUrl baseUrl: String,
-        interceptor: TwitterOAuthInterceptor
+        okHttpClient: OkHttpClient
     ): TwitterStreamApi = Retrofit.Builder()
         .baseUrl(baseUrl)
-        .client(OkHttpClient.Builder().addInterceptor(interceptor).build())
+        .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
         .create(TwitterStreamApi::class.java)
