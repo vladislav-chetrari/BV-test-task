@@ -6,6 +6,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import okhttp3.internal.toImmutableList
+import timber.log.Timber
 import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -57,6 +58,11 @@ class TwitterLiveStatusesManager(
             operationFlow.emit(Operation.Clear)
             timerJob.cancelChildren()
         }
+    }
+
+    fun onNetworkStateChange(connected: Boolean) {
+        Timber.d("onNetworkStateChange connected = $connected")
+        if (!connected) timerJob.cancelChildren()
     }
 
     private fun remove(liveStatus: TwitterLiveStatus) {
