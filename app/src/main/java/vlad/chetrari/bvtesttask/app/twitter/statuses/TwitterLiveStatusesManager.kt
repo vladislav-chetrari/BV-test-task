@@ -17,13 +17,14 @@ class TwitterLiveStatusesManager(
 
     //lifespan timers need to use separate job so we can cancel them separately from other coroutines
     private val timerJob = Job()
+
+    //launches all coroutines on computation dispatcher by default
     override val coroutineContext: CoroutineContext
         get() = parentCoroutineContext + Dispatchers.Default
 
-    private val list = LinkedList<TwitterLiveStatus>()
-
     //use shared flow to avoid concurrent list changes and backpressure
     private val operationFlow = MutableSharedFlow<Operation>()
+    private val list = LinkedList<TwitterLiveStatus>()
     val liveData: LiveData<List<TwitterLiveStatus>> = MutableLiveData()
 
     init {
