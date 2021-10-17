@@ -17,4 +17,9 @@
     <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="ProgressHorizontal" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_marginBottom">-6dp</item>
+        <item name="android:layout_marginTop">-6dp</item>
+    </style>
 </resources>
