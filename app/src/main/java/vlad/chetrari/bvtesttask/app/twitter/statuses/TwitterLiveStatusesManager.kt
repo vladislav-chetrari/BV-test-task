@@ -63,6 +63,9 @@ class TwitterLiveStatusesManager(
     fun onNetworkStateChange(connected: Boolean) {
         Timber.d("onNetworkStateChange connected = $connected")
         if (!connected) timerJob.cancelChildren()
+        else list.forEach { liveStatus ->
+            launch(timerJob) { liveStatus.launchTimer(::remove) }
+        }
     }
 
     private fun remove(liveStatus: TwitterLiveStatus) {
