@@ -12,7 +12,7 @@ class TwitterLiveStatus(
     var lifespanCountdownSeconds = timeToLiveSeconds
         set(value) {
             field = value
-            Timber.v("status[${status.id}].lifespanCountdownSeconds = , $value")
+            Timber.v("status[${status.id}].lifespanCountdownSeconds = $value")
             onCountdownTick?.invoke(value)
         }
 }
