@@ -1,16 +1,14 @@
 package vlad.chetrari.bvtesttask.app.twitter.statuses
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
-import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
 import vlad.chetrari.bvtesttask.data.network.client.TwitterStreamClient
 import java.net.SocketTimeoutException
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,28 +16,31 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     private val client: TwitterStreamClient
 ) : BaseViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
+    private var streamDisposable: Disposable? = null
+
+    private val liveStatusesManager = TwitterLiveStatusesManager(
+        viewModelScope.coroutineContext,
+        STATUS_LIFESPAN_SECONDS
+    )
 
     val searchQuery = mutableLiveData("")
-    val statuses: LiveData<List<TwitterStatus>> = searchQuery.switchMap { twitStreamLiveData(it) }
+    val statuses: LiveData<List<TwitterLiveStatus>> = liveStatusesManager.liveData
 
-    fun onSearchQuery(query: String?) = searchQuery.mutable.postValue(query?.trim() ?: "")
+    fun onSearchQuery(query: String?) {
+        searchQuery.mutable.value = query?.trim() ?: ""
+        liveStatusesManager.clear()
+        runStream(searchQuery.value!!)
+    }
 
-    private fun restartTwitStream() = searchQuery.mutable.postValue(searchQuery.value)
+    private fun restartTwitStream() = onSearchQuery(searchQuery.value)
 
-    private fun twitStreamLiveData(query: String): LiveData<List<TwitterStatus>> {
-        val liveData = MutableLiveData<List<TwitterStatus>>()
-        compositeDisposable.clear()
+    private fun runStream(query: String) {
+        streamDisposable?.dispose()
         if (query.isNotBlank()) {
-            val twitList = LinkedList<TwitterStatus>()
-            compositeDisposable.add(client.search(query).subscribe({ str ->
-                twitList.add(str)
-                liveData.postValue(twitList.sortedByDescending { it.timestampEpochMillis })
-            }, ::onError))
-        } else {
-            liveData.postValue(emptyList())
+            streamDisposable = client.search(query).subscribe({
+                viewModelScope.launch { liveStatusesManager.add(it) }
+            }, ::onError)
         }
-        return liveData
     }
 
     override fun onError(error: Throwable) {
@@ -53,7 +54,12 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        compositeDisposable.dispose()
+        liveStatusesManager.close()
+        streamDisposable?.dispose()
         super.onCleared()
+    }
+
+    private companion object {
+        const val STATUS_LIFESPAN_SECONDS = 10
     }
 }

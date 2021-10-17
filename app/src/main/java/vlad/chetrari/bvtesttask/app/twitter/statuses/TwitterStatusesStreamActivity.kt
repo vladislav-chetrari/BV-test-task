@@ -22,7 +22,7 @@ import vlad.chetrari.bvtesttask.app.base.BaseActivity
 class TwitterStatusesStreamActivity : BaseActivity(R.layout.activity_twitter_statuses_stream) {
 
     private val viewModel by viewModels<TwitterStatusesStreamViewModel>()
-    private val listAdapter = TwitterStatusListAdapter()
+    private val listAdapter = TwitterLiveStatusListAdapter()
 
     private val list: RecyclerView
         get() = findViewById(R.id.list)
