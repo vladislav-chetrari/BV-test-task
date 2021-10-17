@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">BV Test Task</string>
     <string name="twitter_statuses_stream_title">Stream Filter</string>
+    <string name="twitter_statuses_stream_title_format">Stream Filter: %s</string>
     <string name="user_screen_name_format">\@%s</string>
 </resources>
