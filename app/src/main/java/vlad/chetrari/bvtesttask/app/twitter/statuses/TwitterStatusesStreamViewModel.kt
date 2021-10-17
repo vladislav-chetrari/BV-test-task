@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
 import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
@@ -18,29 +18,29 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     private val client: TwitterStreamClient
 ) : BaseViewModel() {
 
-    private var twitStreamDisposable: Disposable? = null
+    private val compositeDisposable = CompositeDisposable()
 
-    private val searchKeyword = MutableLiveData<String>()
-    val twits: LiveData<List<TwitterStatus>> = searchKeyword.switchMap { twitStreamLiveData(it) }
+    val searchQuery = mutableLiveData("")
+    val statuses: LiveData<List<TwitterStatus>> = searchQuery.switchMap { twitStreamLiveData(it) }
 
-    fun onSearchQuery(query: String) = searchKeyword.postValue(query)
+    fun onSearchQuery(query: String?) = searchQuery.mutable.postValue(query?.trim() ?: "")
+
+    private fun restartTwitStream() = searchQuery.mutable.postValue(searchQuery.value)
 
     private fun twitStreamLiveData(query: String): LiveData<List<TwitterStatus>> {
         val liveData = MutableLiveData<List<TwitterStatus>>()
-        twitStreamDisposable?.dispose()
+        compositeDisposable.clear()
         if (query.isNotBlank()) {
             val twitList = LinkedList<TwitterStatus>()
-            twitStreamDisposable = client.search(query).subscribe({ str ->
+            compositeDisposable.add(client.search(query).subscribe({ str ->
                 twitList.add(str)
                 liveData.postValue(twitList.sortedByDescending { it.timestampEpochMillis })
-            }, ::onError)
+            }, ::onError))
         } else {
             liveData.postValue(emptyList())
         }
         return liveData
     }
-
-    private fun restartTwitStream() = searchKeyword.postValue(searchKeyword.value)
 
     override fun onError(error: Throwable) {
         when (error) {
@@ -53,7 +53,7 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        twitStreamDisposable?.dispose()
+        compositeDisposable.dispose()
         super.onCleared()
     }
 }

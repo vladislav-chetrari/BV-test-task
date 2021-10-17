@@ -2,6 +2,7 @@ package vlad.chetrari.bvtesttask.data.network.client
 
 import com.google.gson.Gson
 import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.internal.toLongOrDefault
@@ -24,7 +25,7 @@ class TwitterStreamClient @Inject constructor(
         .map { it.source() }
         .flatMap { stringEvents(it) }
         .filter { it.isNotBlank() }
-        .doOnNext { Timber.d("tweet data: $it") }
+        .doOnNext { Timber.d("status data: $it") }
         .map { json -> gson.fromJson(json, TwitterStatusResponse::class.java) }
         .map { response ->
             TwitterStatus(
@@ -41,14 +42,15 @@ class TwitterStreamClient @Inject constructor(
         .observeOn(AndroidSchedulers.mainThread())
 
     private fun stringEvents(source: BufferedSource): Observable<String> = Observable.create { emitter ->
+        val safeEmitter: () -> ObservableEmitter<String>? = { if (emitter.isDisposed) null else emitter }
         try {
             while (!source.exhausted()) {
-                emitter.onNext(source.readUtf8Line() ?: "")
+                safeEmitter()?.onNext(source.readUtf8Line() ?: "")
             }
         } catch (e: IOException) {
-            emitter.onError(e)
+            safeEmitter()?.onError(e)
         } finally {
-            emitter.onComplete()
+            safeEmitter()?.onComplete()
         }
     }
 }
