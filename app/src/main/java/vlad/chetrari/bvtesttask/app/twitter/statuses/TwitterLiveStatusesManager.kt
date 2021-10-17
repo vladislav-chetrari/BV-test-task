@@ -2,69 +2,66 @@ package vlad.chetrari.bvtesttask.app.twitter.statuses
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import okhttp3.internal.toImmutableList
 import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class TwitterLiveStatusesManager(
-    private val context: CoroutineContext,
+    private val parentCoroutineContext: CoroutineContext,
     private val statusLifespanSeconds: Int
 ) : CoroutineScope {
 
-    private var job = Job()
-
-    //TODO get rid of RX here
-    private var disposable: Disposable? = null
+    //lifespan timers need to use separate job so we can cancel them separately from other coroutines
+    private val timerJob = Job()
     override val coroutineContext: CoroutineContext
-        get() = context + job
+        get() = parentCoroutineContext + Dispatchers.Default
 
     private val list = LinkedList<TwitterLiveStatus>()
 
-    //use subject to avoid concurrent list changes
-    private val operationSubject = PublishSubject.create<Operation>()
+    //use shared flow to avoid concurrent list changes and backpressure
+    private val operationFlow = MutableSharedFlow<Operation>()
     val liveData: LiveData<List<TwitterLiveStatus>> = MutableLiveData()
 
     init {
-        disposable = operationSubject.subscribe(::executeOperation)
+        launch {
+            operationFlow.collect { operation ->
+                when (operation) {
+                    is Operation.Add -> list.add(operation.liveStatus)
+                    is Operation.Remove -> list.remove(operation.liveStatus)
+                    Operation.Clear -> list.clear()
+                }
+                withContext(Dispatchers.Main) {
+                    (liveData as MutableLiveData).value = list.toImmutableList()
+                }
+            }
+        }
     }
 
     fun add(status: TwitterStatus) {
-        val liveStatus = TwitterLiveStatus(status, statusLifespanSeconds)
-        operationSubject.onNext(Operation.Add(liveStatus))
         launch {
-            liveStatus.launchTimer(::remove)
+            val liveStatus = TwitterLiveStatus(status, statusLifespanSeconds)
+            operationFlow.emit(Operation.Add(liveStatus))
+            launch(timerJob) {
+                liveStatus.launchTimer(::remove)
+            }
         }
     }
 
     fun clear() {
-        job.cancel()
-        operationSubject.onNext(Operation.Clear)
-        job = Job()
-    }
-
-    fun close() {
-        clear()
-        disposable?.dispose()
+        launch {
+            operationFlow.emit(Operation.Clear)
+            timerJob.cancelChildren()
+        }
     }
 
     private fun remove(liveStatus: TwitterLiveStatus) {
-        operationSubject.onNext(Operation.Remove(liveStatus))
-    }
-
-    private fun executeOperation(operation: Operation) {
-        when (operation) {
-            is Operation.Add -> list.add(operation.liveStatus)
-            is Operation.Remove -> list.remove(operation.liveStatus)
-            Operation.Clear -> list.clear()
+        launch {
+            operationFlow.emit(Operation.Remove(liveStatus))
         }
-        (liveData as MutableLiveData).value = list.toImmutableList()
     }
 
     private suspend fun TwitterLiveStatus.launchTimer(onDeath: (TwitterLiveStatus) -> Unit) {

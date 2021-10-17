@@ -54,7 +54,6 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        liveStatusesManager.close()
         streamDisposable?.dispose()
         super.onCleared()
     }
