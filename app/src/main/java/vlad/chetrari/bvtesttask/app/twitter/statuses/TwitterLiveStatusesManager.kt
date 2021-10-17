@@ -31,7 +31,7 @@ class TwitterLiveStatusesManager(
         launch {
             operationFlow.collect { operation ->
                 when (operation) {
-                    is Operation.Add -> list.add(operation.liveStatus)
+                    is Operation.Add -> list.addFirst(operation.liveStatus)
                     is Operation.Remove -> list.remove(operation.liveStatus)
                     Operation.Clear -> list.clear()
                 }
