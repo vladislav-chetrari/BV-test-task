@@ -1,63 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/m">
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userImage"
+        android:layout_width="@dimen/list_item_twit_user_icon_size"
+        android:layout_height="@dimen/list_item_twit_user_icon_size"
+        android:layout_margin="@dimen/m"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        tools:src="@tools:sample/avatars" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/userInfo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/m"
+        android:layout_marginEnd="@dimen/m"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/userImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/userImage"
+        app:layout_constraintTop_toTopOf="@id/userImage">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/userImage"
-            android:layout_width="@dimen/list_item_twit_user_icon_size"
-            android:layout_height="@dimen/list_item_twit_user_icon_size"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            tools:src="@tools:sample/avatars" />
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/userScreenName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/m"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            tools:text="@tools:sample/lorem[2]" />
 
-            <TextView
-                android:id="@+id/userScreenName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                tools:text="@tools:sample/lorem[2]" />
-
-            <TextView
-                android:id="@+id/userDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/gray"
-                tools:text="@tools:sample/lorem[10]" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/userDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/gray"
+            tools:text="@tools:sample/lorem[10]" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/twitText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_twit_user_icon_size"
-        android:paddingStart="@dimen/m"
-        android:paddingEnd="0dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/userInfo"
+        app:layout_constraintTop_toBottomOf="@id/userImage"
         tools:text="@tools:sample/lorem[14]" />
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/lifespanProgressBar"
+        style="@style/ProgressHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/twitText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
