@@ -1,5 +1,9 @@
 package vlad.chetrari.bvtesttask.app.twitter.statuses
 
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,12 +11,15 @@ import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
 import vlad.chetrari.bvtesttask.data.network.client.TwitterStreamClient
+import java.net.SocketException
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
 class TwitterStatusesStreamViewModel @Inject constructor(
-    private val client: TwitterStreamClient
+    private val client: TwitterStreamClient,
+    private val connectivityManager: ConnectivityManager
 ) : BaseViewModel() {
 
     private var streamDisposable: Disposable? = null
@@ -28,12 +35,11 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     fun onSearchQuery(query: String?) {
         searchQuery.mutable.value = query?.trim() ?: ""
         liveStatusesManager.clear()
-        runStream(searchQuery.value!!)
+        runStream()
     }
 
-    private fun restartTwitStream() = onSearchQuery(searchQuery.value)
-
-    private fun runStream(query: String) {
+    private fun runStream() {
+        val query = searchQuery.value!!
         streamDisposable?.dispose()
         if (query.isNotBlank()) {
             streamDisposable = client.search(query)
@@ -45,10 +51,32 @@ class TwitterStatusesStreamViewModel @Inject constructor(
         when (error) {
             is SocketTimeoutException -> {
                 Timber.w("SocketTimeoutException capt, restarting the stream")
-                restartTwitStream()
+                runStream()
+            }
+            is SocketException, is UnknownHostException -> {
+                liveStatusesManager.onNetworkStateChange(false)
+                registerAutoCancellableNetworkCallback {
+                    liveStatusesManager.onNetworkStateChange(true)
+                    runStream()
+                }
             }
             else -> super.onError(error)
         }
+    }
+
+    private fun registerAutoCancellableNetworkCallback(onNetworkAvailable: () -> Unit) {
+        connectivityManager.registerNetworkCallback(
+            NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build(),
+            object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    onNetworkAvailable()
+                    connectivityManager.unregisterNetworkCallback(this)
+                }
+            }
+        )
     }
 
     override fun onCleared() {
