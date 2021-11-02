@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
+import vlad.chetrari.bvtesttask.app.base.AppDispatchers
 import vlad.chetrari.bvtesttask.app.base.BaseViewModel
 import vlad.chetrari.bvtesttask.data.network.client.TwitterStreamClient
 import java.net.SocketException
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TwitterStatusesStreamViewModel @Inject constructor(
+    dispatchers: AppDispatchers,
     private val client: TwitterStreamClient,
     private val connectivityManager: ConnectivityManager
 ) : BaseViewModel() {
@@ -25,6 +27,7 @@ class TwitterStatusesStreamViewModel @Inject constructor(
     private var streamDisposable: Disposable? = null
 
     private val liveStatusesManager = TwitterLiveStatusesManager(
+        dispatchers,
         viewModelScope.coroutineContext,
         STATUS_LIFESPAN_SECONDS
     )

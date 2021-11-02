@@ -7,11 +7,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import okhttp3.internal.toImmutableList
 import timber.log.Timber
+import vlad.chetrari.bvtesttask.app.base.AppDispatchers
 import vlad.chetrari.bvtesttask.data.model.ui.TwitterStatus
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class TwitterLiveStatusesManager(
+    private val dispatchers: AppDispatchers,
     private val parentCoroutineContext: CoroutineContext,
     private val statusLifespanSeconds: Int
 ) : CoroutineScope {
@@ -21,7 +23,7 @@ class TwitterLiveStatusesManager(
 
     //launches all coroutines on computation dispatcher by default
     override val coroutineContext: CoroutineContext
-        get() = parentCoroutineContext + Dispatchers.Default
+        get() = parentCoroutineContext + dispatchers.computation
 
     //use shared flow to avoid concurrent list changes and backpressure
     private val operationFlow = MutableSharedFlow<Operation>()
