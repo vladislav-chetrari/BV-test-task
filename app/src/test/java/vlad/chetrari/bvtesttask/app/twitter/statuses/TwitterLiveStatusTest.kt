@@ -25,17 +25,17 @@ class TwitterLiveStatusTest {
 
     @Test
     fun defaultValues() {
-        assertEquals(liveStatus.status, status)
-        assertEquals(liveStatus.timeToLiveSeconds, 5)
+        assertEquals(status, liveStatus.status)
+        assertEquals(5, liveStatus.timeToLiveSeconds)
         assertNull(liveStatus.onCountdownTick)
-        assertEquals(liveStatus.lifespanCountdownSeconds, 5)
+        assertEquals(5, liveStatus.lifespanCountdownSeconds)
     }
 
     @Test
     fun lifespanCountdownSeconds_set_whenOnCountdownTickNull_thenSetsValue() {
         liveStatus.lifespanCountdownSeconds = 16
 
-        assertEquals(liveStatus.lifespanCountdownSeconds, 16)
+        assertEquals(16, liveStatus.lifespanCountdownSeconds)
     }
 
     @Test
@@ -45,7 +45,7 @@ class TwitterLiveStatusTest {
 
         liveStatus.lifespanCountdownSeconds = 16
 
-        assertEquals(liveStatus.lifespanCountdownSeconds, 16)
+        assertEquals(16, liveStatus.lifespanCountdownSeconds)
         verify { intConsumer.invoke(16) }
     }
 }
